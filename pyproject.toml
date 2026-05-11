@@ -1,0 +1,16 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "nrs_toolkit"
+version = "0.0.1"
+requires-python = ">=3.11"
+description = "Personal Python toolkit: logging, db, etc."
+readme = "README.md"
+license = { text = "MIT" }
+authors = [{ name = "Nathanael Schaefer", email = "nathanael.r.schaefer@outlook.com" }]
+dependencies = ["psutil"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/nrs_toolkit"]
