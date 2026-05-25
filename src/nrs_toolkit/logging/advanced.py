@@ -144,17 +144,15 @@ class AdvancedLogger():
         Starts listener. 
         Creates two additional daemon threads to accept clients and broadcast stats to clients.
         """
-        threading.Thread(target = self._accept_loop, args= (logger,), daemon=True).start()
+        srv = self._grab_port()
+        threading.Thread(target = self._accept_loop, args= (logger, srv), daemon=True).start()
         threading.Thread(target = self._stats_loop, args= (logger,), daemon=True).start()
         logger.info(f'Listener ready on {self._host}:{self._port}...')
 
-    def _accept_loop(self, logger):
+    def _accept_loop(self, logger, srv):
         """
         Accepts clients and reports a `conn: success` message back to the client.
         """
-        srv = socket.socket()
-        srv.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        srv.bind((self._host, self._port))
         srv.listen()
         
         while True:
@@ -188,6 +186,19 @@ class AdvancedLogger():
             broadcast(payload)
             time.sleep(interval)
 
+    def _grab_port(self):
+        """
+        Bind to the port.
+        If the port is already bound by another process, a `RuntimeError` will be raised.
+        """
+        srv = socket.socket()
+        try:
+            srv.bind((self._host, self._port))
+        except OSError as e:
+            raise RuntimeError(
+                f"AdvancedLogger listener cannot start on {self._host}:{self._port}. Another process is already bound to that port."
+            ) from e
+        return srv
 
     
 class BroadcastHandler(logging.Handler):
