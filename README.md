@@ -5,7 +5,7 @@ Personal Python utilities — logging, and more to come.
 ## Installation
 
 ```
-pip install git+https://github.com/nschaefer1/nrs_toolkit.git
+pip install git+https://github.com/nschaefer1/nrs-toolkit.git
 ```
 
 ## What's included
