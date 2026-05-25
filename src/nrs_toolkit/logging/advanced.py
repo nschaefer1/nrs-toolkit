@@ -16,7 +16,7 @@ _client_lock = threading.Lock()
 def broadcast(payload):
     """
     Send a payload to all listening clients.
-    Expected payload structure is a `dict` with variables `type`, `ts`, and `msg`.
+    Payloads generally include a `dict` with variables `type`, `ts`, and `msg`; fields vary by message type.
     Recommended `ts` strftime is `"%Y-%m-%dT%H:%M:%S"`.
     """
     with _client_lock:
@@ -41,17 +41,17 @@ class AdvancedLogger():
     ***Configuration is locked after first instantiation.***
 
     This class has three logging mechanisms available:     
-        - Console logging: default and always present.  
-        - File logging: triggered in production mode.  
-        - Listener logging: broadcasts log messages to a port, required explicit enabling.  
+        - Console logging (StreamHandler): default and always present.  
+        - File logging (FileHandler): triggered in production mode.  
+        - Listener logging (BroadcastHandler): broadcasts log messages to a port, required explicit enabling.  
 
     Accepted `kwargs`:  
         - `level` (logging.LEVEL, optional): defaults to `logging.INFO`. Invoking the script with `--debug` defaults to `logging.DEBUG`.  
         
-        - `dev` (bool, optional): defaults to False. Enables FileHandler.  
+        - `dev` (bool, optional): defaults to False. When True, FileHandler is disabled.
         - `log_dir` (str, optional): defaults to `logs/`. Sets drop directory of the log files.   
         - `log_file` (str, optional): defaults to `{timestamp}_{suffix}.log`  
-        - `suffix` (str, optional): suffix in `log_file`, defualts to `run`. 
+        - `suffix` (str, optional): suffix in `log_file`, defaults to `run`. 
         - `mode` (str, optional, `a | w`): append `a` or write `w` mode, defaults to `a`.
 
         - `listener` (bool, optional): triggers the BroadcastHandler logging mechanism, defaults to False.
@@ -104,7 +104,7 @@ class AdvancedLogger():
         )
         logger = logging.getLogger(__name__)
         
-        self._resolve_log_file(logger)    # adds a FileHanlder if requested
+        self._resolve_log_file(logger)    # adds a FileHandler if requested
     
         if self._listener:
             logging.getLogger().addHandler(BroadcastHandler())
