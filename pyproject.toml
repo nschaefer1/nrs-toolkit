@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "nrs_toolkit"
-version = "0.0.1"
+version = "0.0.2"
 requires-python = ">=3.12"
 description = "Personal Python toolkit: logging, db, etc."
 readme = "README.md"

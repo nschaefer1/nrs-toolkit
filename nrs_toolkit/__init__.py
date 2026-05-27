@@ -1,5 +1,6 @@
 
 from . import telemetry
+from . import runtime
 
-__version__ = "0.0.1"
-__all__ = ["telementry"]
+__version__ = "0.0.2"
+__all__ = ["telementry", "runtime"]
