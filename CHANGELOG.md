@@ -1,5 +1,16 @@
 # Change Log
 
+### v0.0.2 → v0.0.3
+
+
+#### Features
+
+- New `runtime` module (a89a961).  
+    This module contains a new `WindowGuard` class and the `install_signal_cleanup` function. See [runtime/README.md](nrs_toolkit/runtime/README.md) for full docs.
+
+#### Misc
+- Documentation updates (e.g., README, CHANGELOG)
+
 ---
 
 ### v0.0.1 → v0.0.2
