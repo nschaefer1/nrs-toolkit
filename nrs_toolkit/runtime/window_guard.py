@@ -8,6 +8,36 @@ import signal
 from datetime import datetime, time
 
 class WindowGuard:
+    """
+    Background time-window guard.
+ 
+    ***Spawns a daemon thread on instantiation (unless `delay_invoke=True`).***
+ 
+    This class polls the current time at a fixed interval and reports whether the
+    process is currently inside a configured (start, end) window. Depending on
+    the configured action, it can either simply expose a flag (`report`) or
+    send `SIGTERM` to the current process (`terminate`).
+ 
+    The class supports two action modes:
+        - `report`: sets `self.fact = True` while in-window, otherwise `False`.
+        - `terminate`: sets the flag and also fires `os.kill(os.getpid(), SIGTERM)`.
+ 
+    Accepted `args` and `kwargs`:
+        - `window_min` (tuple[int, int], optional): window start as `(hour, minute)`. Defaults to `(2, 0)`.
+        - `window_max` (tuple[int, int], optional): window end as `(hour, minute)`. Defaults to `(3, 0)`.
+            Windows that cross midnight are supported (e.g. `(22, 0)` to `(2, 0)`).
+ 
+        - `action` (str, optional, `report | terminate`): behavior when in-window. Defaults to `report`.
+        - `interval` (int, optional): polling interval in seconds. Must be `>= 5`. Defaults to `30`.
+        - `delay_invoke` (bool, optional): if True, the polling thread is not started until `run()` is called. Defaults to False.
+ 
+    Most common configurations:
+        - `WindowGuard((2, 0), (3, 0))`: pause-aware utility — report only, caller checks `.fact`.
+        - `WindowGuard((2, 0), (2, 30), action="terminate")`: schedule a nightly self-restart.
+        - `WindowGuard((22, 0), (2, 0), action="terminate")`: cross-midnight termination window.
+ 
+    Raises `ValueError` if `interval < 5`, `window_min == window_max`, or `action` is not in `{"report", "terminate"}`.
+    """
 
     def __init__(
         self,
